@@ -1,0 +1,118 @@
+{
+  "name": "check_for_gray_disk_on_kafka_node",
+  "description": "This incident type refers to the detection of a gray disk on a Kafka node, which can cause sporadic IOPs drops. A gray disk is a type of hard disk failure where the disk starts to fail slowly, causing the disk to become slower and slower over time. As a result, the disk can cause various issues, such as data loss, system crashes, and performance degradation. In the case of a Kafka node, a gray disk can cause sporadic IOPs drops, which can impact the performance of the Kafka cluster and potentially cause data loss. Therefore, it is crucial to detect and fix gray disks as soon as possible to ensure the stability and reliability of the system.",
+  "params": [
+    {
+      "name": "NODE_NAME",
+      "value": ""
+    },
+    {
+      "name": "DISK_NAME",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for Gray Disk on Kafka Node\nThis incident type refers to the detection of a gray disk on a Kafka node, which can cause sporadic IOPs drops. A gray disk is a type of hard disk failure where the disk starts to fail slowly, causing the disk to become slower and slower over time. As a result, the disk can cause various issues, such as data loss, system crashes, and performance degradation. In the case of a Kafka node, a gray disk can cause sporadic IOPs drops, which can impact the performance of the Kafka cluster and potentially cause data loss. Therefore, it is crucial to detect and fix gray disks as soon as possible to ensure the stability and reliability of the system."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk usage of the Kafka node"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `df -h`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk performance of the Kafka node"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `iostat -d ${DISK_NAME}`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the SMART status of the Kafka node's disks"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `smartctl -a /dev/${DISK_NAME}`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk errors of the Kafka node's disks"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `dmesg | grep -i ${DISK_NAME}`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk temperature of the Kafka node's disks"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `smartctl -A /dev/${DISK_NAME} | grep -i temperature`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk health of the Kafka node's disks"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `smartctl -H /dev/${DISK_NAME}`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Identify the affected Kafka node(s) and disk(s) causing the sporadic IOPs drops."
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_kafka_disk_health_check($NODE_NAME, $DISK_NAME)"
+    }
+  ]
+}
