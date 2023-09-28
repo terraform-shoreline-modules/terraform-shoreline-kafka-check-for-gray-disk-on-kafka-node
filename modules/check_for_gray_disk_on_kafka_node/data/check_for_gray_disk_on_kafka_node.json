@@ -3,11 +3,11 @@
   "description": "This incident type refers to the detection of a gray disk on a Kafka node, which can cause sporadic IOPs drops. A gray disk is a type of hard disk failure where the disk starts to fail slowly, causing the disk to become slower and slower over time. As a result, the disk can cause various issues, such as data loss, system crashes, and performance degradation. In the case of a Kafka node, a gray disk can cause sporadic IOPs drops, which can impact the performance of the Kafka cluster and potentially cause data loss. Therefore, it is crucial to detect and fix gray disks as soon as possible to ensure the stability and reliability of the system.",
   "params": [
     {
-      "name": "NODE_NAME",
+      "name": "DISK_NAME",
       "value": ""
     },
     {
-      "name": "DISK_NAME",
+      "name": "NODE_NAME",
       "value": ""
     },
     {
@@ -112,7 +112,7 @@
       "name": "cell_15",
       "type": "OP_LANG",
       "enabled": true,
-      "content": "host | host_name=$HOST_NAME | invoke_kafka_disk_health_check($NODE_NAME, $DISK_NAME)"
+      "content": "host | host_name=$HOST_NAME | invoke_disk_health_check($DISK_NAME, $NODE_NAME)"
     }
   ]
 }
