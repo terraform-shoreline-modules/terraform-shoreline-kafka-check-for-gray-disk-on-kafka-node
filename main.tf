@@ -14,8 +14,8 @@ provider "shoreline" {
   debug = true
 }
 
-module "check_for_gray_disk_on_kafka_node" {
-  source    = "./modules/check_for_gray_disk_on_kafka_node"
+module "gray_disk_on_kafka_node" {
+  source    = "./modules/gray_disk_on_kafka_node"
 
   providers = {
     shoreline = shoreline
